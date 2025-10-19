@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Device Verification</title>
+  <style>
+    :root {
+      --primary: #3498db;
+      --success: #2ecc71;
+      --warning: #f39c12;
+      --danger: #e74c3c;
+      --dark: #0b1620;
+      --light: #ecf0f1;
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: "Poppins", sans-serif;
+    }
+    
+    body {
+      background: linear-gradient(135deg, #0b1620 0%, #1c2e3f 100%);
+      color: white;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      text-align: center;
+      padding: 20px;
+    }
+    
+    .container {
+      width: 100%;
+      max-width: 450px;
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(10px);
+      border-radius: 20px;
+      padding: 40px 30px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      position: relative;
+    }
+    
+    .icon-container {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 25px;
+      background: rgba(255, 255, 255, 0.1);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+    
+    .loading {
+      border: 8px solid rgba(255,255,255,0.1);
+      border-top: 8px solid var(--primary);
+      border-radius: 50%;
+      width: 80px;
+      height: 80px;
+      animation: spin 1s linear infinite;
+      margin: 30px auto;
+    }
+    
+    h2 { 
+      margin: 10px 0 5px; 
+      font-size: 1.8rem;
+      font-weight: 600;
+    }
+    
+    h3 {
+      margin: 15px 0 10px;
+      font-size: 1.4rem;
+      font-weight: 500;
+    }
+    
+    p { 
+      color: #b8b8b8; 
+      margin: 0 0 25px; 
+      line-height: 1.6;
+    }
+    
+    button {
+      background: var(--primary);
+      border: none;
+      color: white;
+      font-weight: 600;
+      padding: 14px 32px;
+      border-radius: 50px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3);
+    }
+    
+    button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(52, 152, 219, 0.4);
+    }
+    
+    .success h3 { color: var(--success); }
+    .fail h3 { color: var(--danger); }
+    .same h3 { color: var(--warning); }
+    
+    .status-message {
+      font-size: 0.9rem;
+      color: #95a5a6;
+      margin-top: 10px;
+    }
+    
+    .progress-container {
+      width: 100%;
+      height: 6px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 3px;
+      margin: 30px 0;
+      overflow: hidden;
+    }
+    
+    .progress-bar {
+      height: 100%;
+      background: var(--primary);
+      border-radius: 3px;
+      width: 0%;
+      transition: width 0.5s ease;
+    }
+    
+    @keyframes spin {
+      100% { transform: rotate(360deg); }
+    }
+    
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+      100% { transform: scale(1); }
+    }
+    
+    .pulse {
+      animation: pulse 2s infinite;
+    }
+    
+    .hidden {
+      display: none;
+    }
+    
+    .developer-credit {
+      position: absolute;
+      bottom: 15px;
+      left: 0;
+      right: 0;
+      text-align: center;
+      font-size: 0.8rem;
+      color: rgba(255, 255, 255, 0.5);
+    }
+    
+    .developer-credit a {
+      color: #3498db;
+      text-decoration: none;
+      font-weight: 500;
+    }
+    
+    .developer-credit a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <div id="loadingScreen">
+    <div class="loading"></div>
+    <h2>Device Verification</h2>
+    <p>Scanning your device for security verification...</p>
+    
+    <div class="progress-container">
+      <div id="progressBar" class="progress-bar"></div>
+    </div>
+    
+    <p class="status-message">This will only take a moment</p>
+    
+    <div class="developer-credit">
+      Developed by <a href="https://t.me/txgimran" target="_blank">#txg</a>
+    </div>
+  </div>
+
+  <div id="successScreen" class="hidden success">
+    <div class="icon-container">
+      <svg xmlns="http://www.w3.org/2000/svg" width="55" height="55" fill="none" stroke="#2ecc71" stroke-width="4" viewBox="0 0 24 24">
+        <path d="M5 13l4 4L19 7"/>
+      </svg>
+    </div>
+    <h2>Device Verification</h2>
+    <h3>Verification Successful</h3>
+    <p>Your device has been successfully verified and registered.</p>
+    <button onclick="closeWindow()">Continue to Bot</button>
+    
+    <div class="developer-credit">
+      Developed by <a href="https://t.me/txgimran" target="_blank">#txg</a>
+    </div>
+  </div>
+
+  <div id="failScreen" class="hidden fail">
+    <div class="icon-container">
+      <svg xmlns="http://www.w3.org/2000/svg" width="55" height="55" fill="none" stroke="#e74c3c" stroke-width="4" viewBox="0 0 24 24">
+        <path d="M18 6L6 18M6 6l12 12"/>
+      </svg>
+    </div>
+    <h2>Device Verification</h2>
+    <h3>VPN Detected</h3>
+    <p>Please disable your VPN and try again to complete verification.</p>
+    <button onclick="closeWindow()">Close</button>
+    
+    <div class="developer-credit">
+      Developed by <a href="https://t.me/txgimran" target="_blank">#txg</a>
+    </div>
+  </div>
+
+  <div id="sameScreen" class="hidden same">
+    <div class="icon-container">
+      <svg xmlns="http://www.w3.org/2000/svg" width="55" height="55" fill="none" stroke="#f39c12" stroke-width="4" viewBox="0 0 24 24">
+        <path d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.35 16.5c-.77.833.192 2.5 1.732 2.5z"/>
+      </svg>
+    </div>
+    <h2>Device Verification</h2>
+    <h3>Device Already Verified</h3>
+    <p>This device has already been verified. You can still refer friends to earn rewards!</p>
+    <button onclick="closeWindow()">Continue to Bot</button>
+    
+    <div class="developer-credit">
+      Developed by <a href="https://t.me/txgimran" target="_blank">#txg</a>
+    </div>
+  </div>
+</div>
+
+<script>
+  // DOM Elements
+  const loadingScreen = document.getElementById('loadingScreen');
+  const successScreen = document.getElementById('successScreen');
+  const failScreen = document.getElementById('failScreen');
+  const sameScreen = document.getElementById('sameScreen');
+  const progressBar = document.getElementById('progressBar');
+
+  // URL Parameters
+  const params = new URLSearchParams(window.location.search);
+  const webhookUrl = decodeURIComponent(params.get("webhookUrl") || "");
+  const botId = params.get("botId") || "";
+
+  // Device verification tracking
+  const VERIFIED_DEVICES_KEY = 'deviceVerified';
+  
+  // Start verification immediately
+  document.addEventListener('DOMContentLoaded', startVerification);
+
+  async function startVerification() {
+    try {
+      // Show loading progress
+      let progress = 0;
+      const interval = setInterval(() => {
+        progress += 2;
+        progressBar.style.width = `${progress}%`;
+        if (progress >= 100) clearInterval(interval);
+      }, 40);
+
+      // Wait for 2 seconds
+      await delay(2000);
+      
+      // Create device fingerprint (user_hash)
+      const user_hash = createUserHash();
+      
+      // Check for VPN
+      const vpn = await checkForVPN();
+      
+      // Prepare results for bot
+      const results = {
+        user_hash: user_hash,
+        captcha: "true",
+        vpn: vpn ? "true" : "false"
+      };
+      
+      if (vpn) {
+        // VPN detected
+        showScreen('failScreen');
+        sendWebhook(results, "vpn_blocked");
+      } else {
+        // Check if device already verified
+        const verifiedDevices = getVerifiedDevices();
+        const alreadyVerified = verifiedDevices.includes(user_hash);
+        
+        if (alreadyVerified) {
+          // Same device
+          showScreen('sameScreen');
+          sendWebhook(results, "already_verified");
+        } else {
+          // New device
+          markDeviceAsVerified(user_hash);
+          showScreen('successScreen');
+          sendWebhook(results, "verified");
+        }
+      }
+    } catch (error) {
+      console.error('Verification error:', error);
+      showScreen('failScreen');
+    }
+  }
+
+  function showScreen(screenId) {
+    // Hide all screens
+    loadingScreen.classList.add('hidden');
+    successScreen.classList.add('hidden');
+    failScreen.classList.add('hidden');
+    sameScreen.classList.add('hidden');
+    
+    // Show the selected screen
+    document.getElementById(screenId).classList.remove('hidden');
+  }
+
+  function getVerifiedDevices() {
+    try {
+      const stored = localStorage.getItem(VERIFIED_DEVICES_KEY);
+      return stored ? JSON.parse(stored) : [];
+    } catch (error) {
+      console.error('Error reading verified devices:', error);
+      return [];
+    }
+  }
+
+  function markDeviceAsVerified(user_hash) {
+    try {
+      const verifiedDevices = getVerifiedDevices();
+      if (!verifiedDevices.includes(user_hash)) {
+        verifiedDevices.push(user_hash);
+        localStorage.setItem(VERIFIED_DEVICES_KEY, JSON.stringify(verifiedDevices));
+      }
+    } catch (error) {
+      console.error('Error saving verified device:', error);
+    }
+  }
+
+  function createUserHash() {
+    // Create a unique user_hash using multiple device attributes
+    const factors = [
+      navigator.userAgent,
+      navigator.hardwareConcurrency,
+      screen.width,
+      screen.height,
+      screen.colorDepth,
+      navigator.language,
+      new Date().getTimezoneOffset(),
+      navigator.platform,
+      navigator.deviceMemory || 'unknown',
+      navigator.maxTouchPoints || 'unknown'
+    ].join('|');
+    
+    // Create a hash
+    let hash = 0;
+    for (let i = 0; i < factors.length; i++) {
+      const char = factors.charCodeAt(i);
+      hash = ((hash << 5) - hash) + char;
+      hash = hash & hash;
+    }
+    
+    return Math.abs(hash).toString(36).slice(0, 12).toUpperCase();
+  }
+
+  async function checkForVPN() {
+    try {
+      const pc = new RTCPeerConnection({ iceServers: [] });
+      pc.createDataChannel('');
+      const offer = await pc.createOffer();
+      await pc.setLocalDescription(offer);
+      
+      return new Promise(resolve => {
+        let vpnDetected = false;
+        
+        pc.onicecandidate = (ice) => {
+          if (!ice || !ice.candidate) {
+            resolve(vpnDetected);
+            return;
+          }
+          
+          const candidate = ice.candidate.candidate;
+          if (candidate.includes('relay') || candidate.includes('srflx') || 
+              candidate.includes('turn') || candidate.includes('vpn') ||
+              candidate.includes('proxy')) {
+            vpnDetected = true;
+          }
+        };
+        
+        setTimeout(() => resolve(vpnDetected), 1500);
+      });
+    } catch (error) {
+      console.error('VPN check error:', error);
+      return false;
+    }
+  }
+
+  function sendWebhook(results, status) {
+    if (!webhookUrl) return;
+    
+    const payload = {
+      botId: botId,
+      status: status,
+      results: results,
+      timestamp: new Date().toISOString(),
+      userAgent: navigator.userAgent
+    };
+    
+    fetch(webhookUrl, {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify(payload)
+    }).then(response => {
+      console.log('Webhook sent successfully');
+    }).catch(error => {
+      console.error('Webhook error:', error);
+    });
+  }
+
+  function delay(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+  }
+
+  function closeWindow() {
+    // Try multiple methods to close the window
+    if (window.history.length > 1) {
+      window.history.back();
+    } else {
+      window.close();
+    }
+    
+    setTimeout(() => {
+      window.location.href = 'about:blank';
+    }, 1000);
+  }
+</script>
+
+</body>
+</html>
